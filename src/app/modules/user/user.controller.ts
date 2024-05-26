@@ -1,7 +1,6 @@
 // import httpStatus from 'http-status';
 
 import { NextFunction, Request, Response } from 'express';
-import userValidationSchema from './user.validation';
 import { UserServices } from './user.service';
 // import sendResponse from '../../utils/sendResponse';
 // import { UserServices } from './user.service';
@@ -13,9 +12,6 @@ const createStudent = async (
 ) => {
     try {
         const { password, student: studentData } = req.body;
-
-        // const zodParsedData = userValidationSchema.parse(studentData);
-
         const result = await UserServices.createStudentIntoDb(password, studentData)
 
         // send the success data to client
@@ -32,6 +28,9 @@ const createStudent = async (
         });
     }
 };
+
+
+
 
 export const UserControllers = {
     createStudent,
