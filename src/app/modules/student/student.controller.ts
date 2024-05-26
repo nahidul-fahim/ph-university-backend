@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-// import studentValidationSchema from "./student.validation";
 import studentValidationSchema from "./student.validation";
 import { StudentServices } from "./student.service";
-import sendResponse from "../../utils/sendRsponse";
+import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 
 

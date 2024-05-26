@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { UserServices } from './user.service';
-import sendResponse from '../../utils/sendRsponse';
+import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
-// import sendResponse from '../../utils/sendResponse';
-// import { UserServices } from './user.service';
 
 const createStudent = async (
     req: Request,
