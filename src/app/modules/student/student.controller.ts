@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 // import studentValidationSchema from "./student.validation";
 import studentValidationSchema from "./student.validation";
 import { StudentServices } from "./student.service";
@@ -6,7 +6,7 @@ import { StudentServices } from "./student.service";
 
 
 // get all students controller
-const getAllStudents = async (req: Request, res: Response) => {
+const getAllStudents = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const result = await StudentServices.getAllStudentsFromDB();
         // now send the response to client side
@@ -15,17 +15,13 @@ const getAllStudents = async (req: Request, res: Response) => {
             message: "Student data got successfully!",
             data: result,
         });
-    } catch (error: any) {
-        res.status(500).json({
-            success: false,
-            message: error.message || "Something went wrong",
-            error: error,
-        });
+    } catch (error) {
+        next(error)
     }
 };
 
 // get single student controller
-const getSingleStudent = async (req: Request, res: Response) => {
+const getSingleStudent = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { studentId } = req.params;
         const result = await StudentServices.getSingleStudentFromDB(studentId);
@@ -35,12 +31,8 @@ const getSingleStudent = async (req: Request, res: Response) => {
             message: "Single student data is received successfully!",
             data: result,
         });
-    } catch (error: any) {
-        res.status(500).json({
-            success: false,
-            message: error.message || "Something went wrong",
-            error: error,
-        });
+    } catch (error) {
+        next(error)
     }
 };
 

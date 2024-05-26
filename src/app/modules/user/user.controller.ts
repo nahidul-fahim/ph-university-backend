@@ -1,5 +1,3 @@
-// import httpStatus from 'http-status';
-
 import { NextFunction, Request, Response } from 'express';
 import { UserServices } from './user.service';
 // import sendResponse from '../../utils/sendResponse';
@@ -20,12 +18,8 @@ const createStudent = async (
             message: "Student created successfully!",
             data: result,
         })
-    } catch (error: any) {
-        res.status(400).json({
-            success: false,
-            message: error.message || "Something went wrong",
-            error: error,
-        });
+    } catch (error) {
+        next(error)
     }
 };
 
