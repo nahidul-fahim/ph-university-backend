@@ -1,19 +1,11 @@
-import { NextFunction, Request, RequestHandler, Response } from "express";
 import { StudentServices } from "./student.service";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
-
-
-// higher order function to handle async request and catch error
-const catchAsync = (fn: RequestHandler) => {
-    return (req: Request, res: Response, next: NextFunction) => {
-        Promise.resolve(fn(req, res, next)).catch(err => next(err));
-    }
-}
+import catchAsync from "../../utils/catchAsync";
 
 
 // get all students controller
-const getAllStudents = catchAsync(async (req, res, next) => {
+const getAllStudents = catchAsync(async (req, res) => {
     const result = await StudentServices.getAllStudentsFromDB();
     // now send the response to client side
     sendResponse(res, {
