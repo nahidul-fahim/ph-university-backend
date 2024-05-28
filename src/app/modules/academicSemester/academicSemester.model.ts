@@ -16,7 +16,7 @@ const academicSemesterSchema = new Schema<TAcademicSemester>(
             enum: AcademicSemesterCode,
         },
         year: {
-            type: Date,
+            type: String,
             required: true,
         },
         startMonth: {
@@ -33,4 +33,4 @@ const academicSemesterSchema = new Schema<TAcademicSemester>(
 )
 
 
-export const AcademicSemesterModel = model<TAcademicSemester>('academicSemester', academicSemesterSchema)
+export const AcademicSemester = model<TAcademicSemester>('academicSemester', academicSemesterSchema)

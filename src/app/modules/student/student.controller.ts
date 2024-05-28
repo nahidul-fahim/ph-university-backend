@@ -2,10 +2,11 @@ import { StudentServices } from "./student.service";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
+import { NextFunction, Request, Response } from "express";
 
 
 // get all students controller
-const getAllStudents = catchAsync(async (req, res) => {
+const getAllStudents = catchAsync(async (req: Request, res: Response) => {
     const result = await StudentServices.getAllStudentsFromDB();
     // now send the response to client side
     sendResponse(res, {
@@ -17,7 +18,7 @@ const getAllStudents = catchAsync(async (req, res) => {
 })
 
 // get single student controller
-const getSingleStudent = catchAsync(async (req, res, next) => {
+const getSingleStudent = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const { studentId } = req.params;
     const result = await StudentServices.getSingleStudentFromDB(studentId);
     // now send the response to client side
