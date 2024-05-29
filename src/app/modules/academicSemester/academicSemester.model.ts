@@ -33,4 +33,18 @@ const academicSemesterSchema = new Schema<TAcademicSemester>(
 )
 
 
+// checking if the semester was created before in the same year
+academicSemesterSchema.pre('save', async function (next) {
+    const isSemesterExists = await AcademicSemester.findOne({
+        year: this.year,
+        name: this.name,
+    })
+    // throw ne error if same year and name exists in the database
+    if (isSemesterExists) {
+        throw new Error("Semester already exists!")
+    }
+    next();
+})
+
+
 export const AcademicSemester = model<TAcademicSemester>('academicSemester', academicSemesterSchema)
