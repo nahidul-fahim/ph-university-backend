@@ -8,21 +8,28 @@ const createAcademicFacultyIntoDb = async (payload: TAcademicFaculty) => {
 }
 
 // get all academic faculty
-const getAllAcademicFacultyFromDb = async () => {
+const getAllAcademicFacultiesFromDb = async () => {
     const result = await AcademicFaculty.find();
     return result;
-} 
+}
 
 // get single academic faculty
 const getSingleAcademicFacultyFromDb = async (id: string) => {
     const result = await AcademicFaculty.findById(id);
     return result;
-} 
+};
+
+// update academy faculty
+const updateAcademyFacultyIntoDb = async (id: string, payload: TAcademicFaculty) => {
+    const result = await AcademicFaculty.findOneAndUpdate({ _id: id }, payload, { new: true });
+    return result;
+}
 
 
 
 export const AcademicFacultyServices = {
     createAcademicFacultyIntoDb,
-    getAllAcademicFacultyFromDb,
+    getAllAcademicFacultiesFromDb,
     getSingleAcademicFacultyFromDb,
+    updateAcademyFacultyIntoDb
 }

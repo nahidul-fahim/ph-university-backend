@@ -27,8 +27,6 @@ const getSingleAcademicSemesterFromDb = async (id: string) => {
 
 
 
-
-
 export const AcademicSemesterServices = {
     createAcademicSemesterIntoDb,
     getAllAcademicSemesterFromDb,
