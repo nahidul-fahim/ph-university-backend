@@ -2,7 +2,7 @@ import { Router } from "express";
 import { UserRoutes } from "../modules/user/user.router";
 import { StudentRoutes } from "../modules/student/student.route";
 import { AcademicSemesterRouter } from "../modules/academicSemester/academicSemester.route";
-import { AcademicFacultyRouter } from "../modules/academiFaculty/academicFaculty.route";
+import { AcademicFacultyRouter } from "../modules/academicFaculty/academicFaculty.route";
 
 const router = Router();
 
