@@ -15,4 +15,17 @@ const academicFacultySchema = new Schema<TAcademicFaculty>(
     }
 )
 
-export const AcademicFaculty = model<TAcademicFaculty>('academicFaculty', academicFacultySchema)
+
+// checking if academic department already exists
+academicFacultySchema.pre('save', async function (next) {
+    const isFacultyExists = await AcademicFaculty.findOne({
+        name: this.name
+    })
+    if (isFacultyExists) {
+        throw new Error("This department is already exists!")
+    }
+    next();
+})
+
+
+export const AcademicFaculty = model<TAcademicFaculty>('AcademicFaculty', academicFacultySchema)

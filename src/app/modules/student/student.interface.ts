@@ -39,6 +39,7 @@ export type TStudent = {
   admissionSemester: Types.ObjectId;
   profileImg?: string;
   isDeleted: boolean;
+  academicDepartment: Types.ObjectId;
 };
 
 //for creating static
