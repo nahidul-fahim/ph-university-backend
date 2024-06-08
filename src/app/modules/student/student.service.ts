@@ -2,27 +2,9 @@ import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
 import { TStudent } from "./student.interface";
 import { Student } from "./student.model";
+import mongoose from "mongoose";
+import { User } from "../user/user.model";
 
-// create a student
-const createStudentIntoDB = async (studentData: TStudent) => {
-
-  if (await Student.isUserExists(studentData?.id)) {
-    throw new AppError(httpStatus.NOT_FOUND, 'User already exists.')
-  }
-
-  const result = await Student.create(studentData); // built in static method
-
-
-  // const student = new Student(studentData); // create an instance
-
-  // if (await student.isUserExists(studentData.id)) {
-  //   throw new Error('User already exists.')
-  // };
-
-  // const result = await student.save(); // built in instance method
-
-  return result;
-};
 
 // get all students from DB
 const getAllStudentsFromDB = async () => {
@@ -48,8 +30,53 @@ const getSingleStudentFromDB = async (id: string) => {
   return result;
 };
 
+
+// delete a student from db
+const deleteStudentFromDB = async (id: string) => {
+
+  const isStudentExists = await Student.findOne({ id: id })
+  if (!isStudentExists) {
+    throw new AppError(httpStatus.NOT_FOUND, "Student doesn't exist!")
+  }
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+    const deletedStudent = await Student.findOneAndUpdate(
+      { id },
+      { isDeleted: true },
+      { new: true, session },
+    );
+
+    if (!deletedStudent) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete student');
+    }
+
+    const deletedUser = await User.findOneAndUpdate(
+      { id },
+      { isDeleted: true },
+      { new: true, session },
+    );
+
+    if (!deletedUser) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete user');
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return deletedStudent;
+  } catch (err) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error('Failed to delete student');
+  }
+};
+
+
 export const StudentServices = {
-  createStudentIntoDB,
   getAllStudentsFromDB,
   getSingleStudentFromDB,
+  deleteStudentFromDB,
 };

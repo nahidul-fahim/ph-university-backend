@@ -10,6 +10,9 @@ router.get('/', StudentControllers.getAllStudents);
 // get single student
 router.get('/:studentId', StudentControllers.getSingleStudent);
 
+// delete a student
+router.delete('/:studentId', StudentControllers.deleteStudent);
+
 
 
 export const StudentRoutes = router;
