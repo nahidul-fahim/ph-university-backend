@@ -1,14 +1,44 @@
-import { NextFunction, Request, Response } from "express";
+import { ErrorRequestHandler } from "express";
 
-const globalErrorHandler = ((err: any, req: Request, res: Response, next: NextFunction) => {
+const globalErrorHandler: ErrorRequestHandler = ((err, req, res, next) => {
+
+    // setting default values
     let statusCode = err.statusCode || 500;
-    let message = "Something went wrong";
+    let message = err.message || "Something went wrong";
+
+    // declaring type for error sources
+    type TErrorSources = {
+        path: string | number,
+        message: string,
+    } []
+
+    const errorSource: TErrorSources = [
+        {
+            path: '',
+            message: 'Something went wrong'
+        }
+    ]
+
+
     return res.status(statusCode).json({
         success: false,
-        message: err.message || message,
-        error: err,
+        message,
+        errorSource,
+        // error: err,
     });
 })
 
 
 export default globalErrorHandler;
+
+
+/*
+Error handling pattern:
+success
+message
+errorSource:[
+path: '',
+message: ''
+]
+stack
+*/
