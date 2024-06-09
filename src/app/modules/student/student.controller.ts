@@ -17,6 +17,8 @@ const getAllStudents = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+
+
 // get single student controller
 const getSingleStudent = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const { studentId } = req.params;
@@ -29,6 +31,24 @@ const getSingleStudent = catchAsync(async (req: Request, res: Response, next: Ne
         data: result
     })
 })
+
+
+
+// update student controller
+const updateStudent = catchAsync(async (req: Request, res:Response) => {
+    const { studentId } = req.params;
+    const { student } = req.body;
+    const result = await StudentServices.updateStudentIntoDB(studentId, student);
+  
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Student is updated successfully',
+      data: result,
+    });
+  });
+
+
 
 // delete a student
 const deleteStudent = catchAsync(async (req: Request, res: Response) => {
@@ -46,5 +66,6 @@ const deleteStudent = catchAsync(async (req: Request, res: Response) => {
 export const StudentControllers = {
     getAllStudents,
     getSingleStudent,
+    updateStudent,
     deleteStudent,
 };

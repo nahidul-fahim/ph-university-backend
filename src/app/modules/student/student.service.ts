@@ -18,9 +18,11 @@ const getAllStudentsFromDB = async () => {
   return result;
 };
 
+
+
 // get single student from DB
 const getSingleStudentFromDB = async (id: string) => {
-  const result = await Student.findById(id).populate('admissionSemester')
+  const result = await Student.findOne({ id }).populate('admissionSemester')
     .populate({
       path: "academicDepartment",
       populate: {
@@ -29,6 +31,42 @@ const getSingleStudentFromDB = async (id: string) => {
     });
   return result;
 };
+
+
+
+// update student into db
+const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
+  const { name, guardian, localGuardian, ...remainingStudentData } = payload;
+
+  const modifiedUpdatedData: Record<string, unknown> = {
+    ...remainingStudentData,
+  };
+
+  if (name && Object.keys(name).length) {
+    for (const [key, value] of Object.entries(name)) {
+      modifiedUpdatedData[`name.${key}`] = value;
+    }
+  }
+
+  if (guardian && Object.keys(guardian).length) {
+    for (const [key, value] of Object.entries(guardian)) {
+      modifiedUpdatedData[`guardian.${key}`] = value;
+    }
+  }
+
+  if (localGuardian && Object.keys(localGuardian).length) {
+    for (const [key, value] of Object.entries(localGuardian)) {
+      modifiedUpdatedData[`localGuardian.${key}`] = value;
+    }
+  }
+
+  const result = await Student.findOneAndUpdate({ id }, modifiedUpdatedData, {
+    new: true,
+    runValidators: true,
+  });
+  return result;
+};
+
 
 
 // delete a student from db
@@ -70,7 +108,7 @@ const deleteStudentFromDB = async (id: string) => {
   } catch (err) {
     await session.abortTransaction();
     await session.endSession();
-    throw new Error('Failed to delete student');
+    throw new AppError(httpStatus.NOT_FOUND, 'Failed to delete student');
   }
 };
 
@@ -78,5 +116,6 @@ const deleteStudentFromDB = async (id: string) => {
 export const StudentServices = {
   getAllStudentsFromDB,
   getSingleStudentFromDB,
+  updateStudentIntoDB,
   deleteStudentFromDB,
 };
