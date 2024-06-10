@@ -3,6 +3,7 @@ import { ZodError } from "zod";
 import { TErrorSources } from "../interface/error";
 import config from "../config";
 import handleZodError from "../errors/handleZodError";
+import handleValidationError from "../errors/handleValidationError";
 
 const globalErrorHandler: ErrorRequestHandler = ((err, req, res, next) => {
 
@@ -25,17 +26,22 @@ const globalErrorHandler: ErrorRequestHandler = ((err, req, res, next) => {
         message = simplifiedError?.message;
         errorSources = simplifiedError?.errorSources;
     }
+    else if (err?.name === "ValidationError") {
+        const simplifiedError = handleValidationError(err);
+        statusCode = simplifiedError?.statusCode;
+        message = simplifiedError?.message;
+        errorSources = simplifiedError?.errorSources;
+    }
 
 
 
-
-    
     // this is the final return
     return res.status(statusCode).json({
         success: false,
         message,
         errorSources,
-        stack: config.NODE_ENV === "development" ? err?.stack : null
+        stack: config.NODE_ENV === "development" ? err?.stack : null,
+        // err
     });
 })
 
@@ -52,4 +58,4 @@ path: '',
 message: ''
 ]
 stack
-*/
+*/"#b9ff37"
