@@ -22,7 +22,7 @@ const createStudentIntoDb = async (password: string, payload: TStudent) => {
     if (!admissionSemester) {
         throw new AppError(httpStatus.NOT_FOUND, "Semester not found!")
     }
-
+    
     /*
     Steps of transaction and rollback: 
     1. startSession()
