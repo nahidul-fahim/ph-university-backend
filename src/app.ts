@@ -13,10 +13,14 @@ app.use(cors());
 app.use("/api/v1", router);
 
 
+const test = async (req: Request, res: Response) => {
+    const a = 10;
+    res.send(a)
+};
+
+
 // testing route
-app.get('/', (req: Request, res: Response) => {
-    res.send('Hello World! PH University backend is ready to deliver.')
-})
+app.get('/', test)
 
 // global error handler
 app.use(globalErrorHandler)
