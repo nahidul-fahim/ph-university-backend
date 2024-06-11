@@ -6,12 +6,13 @@ import handleZodError from "../errors/handleZodError";
 import handleValidationError from "../errors/handleValidationError";
 import handleCastError from "../errors/handleCaseError";
 import handleDuplicateError from "../errors/handleDuplicateError";
+import AppError from "../errors/AppError";
 
 const globalErrorHandler: ErrorRequestHandler = ((err, req, res, next) => {
 
     // setting default values
-    let statusCode = err.statusCode || 500;
-    let message = err.message || "Something went wrong";
+    let statusCode = 500;
+    let message = "Something went wrong";
     let errorSources: TErrorSources = [
         {
             path: '',
@@ -45,6 +46,22 @@ const globalErrorHandler: ErrorRequestHandler = ((err, req, res, next) => {
         statusCode = simplifiedError?.statusCode;
         message = simplifiedError?.message;
         errorSources = simplifiedError?.errorSources;
+    }
+    else if (err instanceof AppError) {
+        statusCode = err?.statusCode;
+        message = err?.message;
+        errorSources = [{
+            path: "",
+            message: err?.message
+        }]
+    }
+    else if (err instanceof Error) {
+        // there is no status code in 'Error', that's why it will use the default status code that is declared above.
+        message = err?.message;
+        errorSources = [{
+            path: "",
+            message: err?.message
+        }]
     }
 
 
