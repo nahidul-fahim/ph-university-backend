@@ -7,15 +7,68 @@ import { User } from "../user/user.model";
 
 
 // get all students from DB
-const getAllStudentsFromDB = async () => {
-  const result = await Student.find().populate('admissionSemester')
+const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+
+  let searchTerm = '';
+
+  // making a copy of query object that can be mutated
+  let queryObj = { ...query }
+
+  if (query?.searchTerm) {
+    searchTerm = query?.searchTerm as string;
+  }
+
+  // HOW OUR FORMAT SHOULD BE FOR PARTIAL MATCH (Query)  : 
+  // { email: { $regex: query.searchTerm, $options: i } }
+  // { presentAddress: { $regex: query.searchTerm, $options: i } }
+  // { 'name.firstName': { $regex: query.searchTerm, $options: i } }
+
+
+  const studentSearchableFields = ['email', 'name.firstName', 'presentAddress']
+
+  // search query
+  const searchQuery = Student.find({
+    $or: studentSearchableFields.map((field) => ({
+      [field]: { $regex: searchTerm, $options: 'i' }
+    }))
+  })
+
+  // exclude field
+  const excludeFields = ['searchTerm', 'sort', 'limit'] // this fields will be excluded from filtering which will do exact match
+  excludeFields.forEach((el) => delete queryObj[el])
+
+  // filter query
+  const filterQuery = searchQuery
+    .find(queryObj)
+    .populate('admissionSemester')
     .populate({
       path: "academicDepartment",
       populate: {
         path: "academicFaculty"
       },
     });
-  return result;
+
+
+  let sort = '-createdAt'
+  if (query.sort) {
+    sort = query.sort as string
+  }
+
+  // sort query
+  const sortQuery = filterQuery.sort(sort)
+
+
+  // limit query
+  let limit = 1;
+  if (query.limit) {
+    limit = query.limit as number;
+  }
+
+  const limitQuery = await sortQuery.limit(limit)
+
+
+
+  return limitQuery;
 };
 
 

@@ -7,7 +7,7 @@ import { NextFunction, Request, Response } from "express";
 
 // get all students controller
 const getAllStudents = catchAsync(async (req: Request, res: Response) => {
-    const result = await StudentServices.getAllStudentsFromDB();
+    const result = await StudentServices.getAllStudentsFromDB(req.query);
     // now send the response to client side
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -35,18 +35,18 @@ const getSingleStudent = catchAsync(async (req: Request, res: Response, next: Ne
 
 
 // update student controller
-const updateStudent = catchAsync(async (req: Request, res:Response) => {
+const updateStudent = catchAsync(async (req: Request, res: Response) => {
     const { studentId } = req.params;
     const { student } = req.body;
     const result = await StudentServices.updateStudentIntoDB(studentId, student);
-  
+
     sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Student is updated successfully',
-      data: result,
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Student is updated successfully',
+        data: result,
     });
-  });
+});
 
 
 
