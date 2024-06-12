@@ -4,84 +4,99 @@ import { TStudent } from "./student.interface";
 import { Student } from "./student.model";
 import mongoose from "mongoose";
 import { User } from "../user/user.model";
+import QueryBuilder from "../../builder/QueryBuilder";
+import { studentSearchableFields } from "./student.constant";
 
 
 // get all students from DB
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
-
-  let searchTerm = '';
-
-  // making a copy of query object that can be mutated
-  let queryObj = { ...query }
-
-  if (query?.searchTerm) {
-    searchTerm = query?.searchTerm as string;
-  }
-
-  // HOW OUR FORMAT SHOULD BE FOR PARTIAL MATCH (Query)  : 
-  // { email: { $regex: query.searchTerm, $options: i } }
-  // { presentAddress: { $regex: query.searchTerm, $options: i } }
-  // { 'name.firstName': { $regex: query.searchTerm, $options: i } }
-
-
-  const studentSearchableFields = ['email', 'name.firstName', 'presentAddress']
-
-  // search query
-  const searchQuery = Student.find({
-    $or: studentSearchableFields.map((field) => ({
-      [field]: { $regex: searchTerm, $options: 'i' }
-    }))
-  })
-
-  // exclude field
-  const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'] // this fields will be excluded from filtering which will do exact match
-  excludeFields.forEach((el) => delete queryObj[el])
-
-  // filter query
-  const filterQuery = searchQuery
-    .find(queryObj)
-    .populate('admissionSemester')
-    .populate({
-      path: "academicDepartment",
-      populate: {
-        path: "academicFaculty"
-      },
-    });
-
-
-  let sort = '-createdAt'
-  if (query.sort) {
-    sort = query.sort as string
-  }
-
-  // sort query
-  const sortQuery = filterQuery.sort(sort)
-
-
-  // pagination & limit query
-  let page = 1;
-  let limit = 1;
-  let skip = 0;
-  if (query.limit) {
-    limit = Number(query.limit);
-  }
-  if (query.page) {
-    page = Number(query.page);
-    skip = (page - 1) * limit
-  }
-
-  const paginateQuery = sortQuery.skip(skip);
-  const limitQuery = paginateQuery.limit(limit);
-
-  // field limiting
-  let fields = '-__v'
-  if (query.fields) {
-    fields = (query.fields as string).split(',').join(' ')
-  }
+  /*
+    let searchTerm = '';
   
-  let fieldQuery = await limitQuery.select(fields)
+    // making a copy of query object that can be mutated
+    let queryObj = { ...query }
+  
+    if (query?.searchTerm) {
+      searchTerm = query?.searchTerm as string;
+    }
+  
+    // HOW OUR FORMAT SHOULD BE FOR PARTIAL MATCH (Query)  : 
+    // { email: { $regex: query.searchTerm, $options: i } }
+    // { presentAddress: { $regex: query.searchTerm, $options: i } }
+    // { 'name.firstName': { $regex: query.searchTerm, $options: i } }
+  
+  
+    const studentSearchableFields = ['email', 'name.firstName', 'presentAddress']
+  
+    // search query
+    const searchQuery = Student.find({
+      $or: studentSearchableFields.map((field) => ({
+        [field]: { $regex: searchTerm, $options: 'i' }
+      }))
+    })
+  
+    // exclude field
+    const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'] // this fields will be excluded from filtering which will do exact match
+    excludeFields.forEach((el) => delete queryObj[el])
+  
+    // filter query
+    const filterQuery = searchQuery
+      .find(queryObj)
+      .populate('admissionSemester')
+      .populate({
+        path: "academicDepartment",
+        populate: {
+          path: "academicFaculty"
+        },
+      });
+  
+  
+    let sort = '-createdAt'
+    if (query.sort) {
+      sort = query.sort as string
+    }
+  
+    // sort query
+    const sortQuery = filterQuery.sort(sort)
+  
+  
+    // pagination & limit query
+    let page = 1;
+    let limit = 1;
+    let skip = 0;
+    if (query.limit) {
+      limit = Number(query.limit);
+    }
+    if (query.page) {
+      page = Number(query.page);
+      skip = (page - 1) * limit
+    }
+  
+    const paginateQuery = sortQuery.skip(skip);
+    const limitQuery = paginateQuery.limit(limit);
+  
+    // field limiting
+    let fields = '-__v'
+    if (query.fields) {
+      fields = (query.fields as string).split(',').join(' ')
+    }
+  
+    let fieldQuery = await limitQuery.select(fields)
+  
+    return fieldQuery;
+  */
 
-  return fieldQuery;
+  const studentQuery = new QueryBuilder(
+    Student.find(), query
+  )
+    .search(studentSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields()
+
+    const result = await studentQuery.modelQuery;
+    return result
 };
 
 
