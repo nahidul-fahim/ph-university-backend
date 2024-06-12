@@ -8,6 +8,8 @@ import { AdminSearchableFields } from './admin.constant';
 import { TAdmin } from './admin.interface';
 import { Admin } from './admin.model';
 
+
+// get all admins
 const getAllAdminsFromDB = async (query: Record<string, unknown>) => {
   const adminQuery = new QueryBuilder(Admin.find(), query)
     .search(AdminSearchableFields)
@@ -20,11 +22,15 @@ const getAllAdminsFromDB = async (query: Record<string, unknown>) => {
   return result;
 };
 
+
+// get single admin
 const getSingleAdminFromDB = async (id: string) => {
   const result = await Admin.findById(id);
   return result;
 };
 
+
+// update admin into db
 const updateAdminIntoDB = async (id: string, payload: Partial<TAdmin>) => {
   const { name, ...remainingAdminData } = payload;
 
@@ -45,6 +51,8 @@ const updateAdminIntoDB = async (id: string, payload: Partial<TAdmin>) => {
   return result;
 };
 
+
+// delete admin from db
 const deleteAdminFromDB = async (id: string) => {
   const session = await mongoose.startSession();
 
