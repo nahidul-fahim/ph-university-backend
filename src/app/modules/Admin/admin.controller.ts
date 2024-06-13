@@ -4,6 +4,7 @@ import sendResponse from '../../utils/sendResponse';
 import { Request, Response } from 'express';
 import { AdminServices } from './admin.service';
 
+// get single admin controller
 const getSingleAdmin = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await AdminServices.getSingleAdminFromDB(id);
@@ -16,6 +17,7 @@ const getSingleAdmin = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// get all admins controller
 const getAllAdmins = catchAsync(async (req: Request, res: Response) => {
   const result = await AdminServices.getAllAdminsFromDB(req.query);
 
@@ -27,6 +29,7 @@ const getAllAdmins = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// update single admin controller
 const updateAdmin = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const { admin } = req.body;
@@ -40,6 +43,7 @@ const updateAdmin = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// delete single admin controller
 const deleteAdmin = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await AdminServices.deleteAdminFromDB(id);
