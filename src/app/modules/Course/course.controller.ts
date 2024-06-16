@@ -70,39 +70,43 @@ const deleteCourse = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// const assignFacultiesWithCourse = catchAsync(async (req: Res, res) => {
-//   const { courseId } = req.params;
-//   const { faculties } = req.body;
 
-//   const result = await CourseServices.assignFacultiesWithCourseIntoDB(
-//     courseId,
-//     faculties,
-//   );
+// assign faculties with course
+const assignFacultiesWithCourse = catchAsync(async (req: Request, res: Response) => {
+  const { courseId } = req.params;
+  const { faculties } = req.body;
 
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Faculties assigned  successfully',
-//     data: result,
-//   });
-// });
+  const result = await CourseServices.assignFacultiesWithCourseIntoDB(
+    courseId,
+    faculties,
+  );
 
-// const removeFacultiesFromCourse = catchAsync(async (req, res) => {
-//   const { courseId } = req.params;
-//   const { faculties } = req.body;
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Faculties assigned  successfully',
+    data: result,
+  });
+});
 
-//   const result = await CourseServices.removeFacultiesFromCourseFromDB(
-//     courseId,
-//     faculties,
-//   );
 
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Faculties removed  successfully',
-//     data: result,
-//   });
-// });
+// remove faculties from course
+const removeFacultiesFromCourse = catchAsync(async (req: Request, res: Response) => {
+  const { courseId } = req.params;
+  const { faculties } = req.body;
+
+  const result = await CourseServices.removeFacultiesFromCourseFromDB(
+    courseId,
+    faculties,
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Faculties removed  successfully',
+    data: result,
+  });
+});
 
 export const CourseControllers = {
   createCourse,
@@ -110,6 +114,6 @@ export const CourseControllers = {
   getAllCourses,
   updateCourse,
   deleteCourse,
-//   assignFacultiesWithCourse,
-//   removeFacultiesFromCourse,
+  assignFacultiesWithCourse,
+  removeFacultiesFromCourse,
 };
